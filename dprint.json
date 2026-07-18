@@ -10,7 +10,9 @@
     "spaceSurroundingProperties": false,
   },
   "json": {},
-  "markdown": {},
+  "markdown": {
+    "lineWidth": 120
+  },
   "yaml": {},
   "excludes": [
     "**/node_modules",

@@ -1,116 +1,57 @@
-# Implementation of protocols in TypeScript using modern Web API
+# ts-net
 
-- [SOCKS5 Server (RFC 1928)](#socks5-server-rfc-1928)
-- [WebSocket Stream Server (RFC 6455)](#websocket-stream-server-rfc-6455)
-- [UPnP Client (RFC 6970)](#upnp-client-rfc-6970)
-  - [Methods](#methods)
-- [STUN Client (RFC 5389)](#stun-client-rfc-5389)
+Implementation clients for:
 
-## Features
-- Based on [Web Stream API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
-- Using [`@std/`](https://jsr.io/@std)
+- [IGN (Internet Gateway Device)](#ign)
+- [SSDP (Simple Service Discovery Protocol)](#ssdp)
+- [UPnP (Universal Plug and Play)](#upnp)
+- [STUN (Session Traversal Utilities for NAT)](#stun)
 
+### Runtime
 
-## [SOCKS5 Server (RFC 1928)](https://datatracker.ietf.org/doc/html/rfc1928)
+- [x] Deno
+- [ ] Node - WIP
 
-- [Full Example](socks/socks5.test.ts)
+## IGN
 
 ```ts
-// socks/test.ts
-serveTcp({port: 40443}, async (conn) => {
-  try {
-    const socks5 = await upgradeSocks5(conn, bndAddrFromNetAddr(conn.localAddr))
-    if (!socks5) throw new Error('SOCKS5 upgrade failed')
+const ssdp = new SSDP()
+const {headers} = await ssdp.search('urn:schemas-upnp-org:device:InternetGatewayDevice:1')
+const gatewayUrl = headers.get('location')!
 
-    const metric = await Promise.all([
-      // client -> server
-      copy(conn, socks5.distConn),
-      // server -> client
-      copy(socks5.distConn, conn),
-    ])
-    metric // Statistic
-      ? console.log('close conn', {RX: metric[1], TX: metric[0]})
-      : console.log('close conn')
-  } catch (e) {
-    if (e instanceof Error) {
-      console.error(e.name, e.message)
-    }
-  }
-})
+const igd = new IGD(gatewayUrl)
+console.log(await igd.getDevices())
 ```
 
-## [WebSocket Stream Server (RFC 6455)](https://datatracker.ietf.org/doc/html/rfc6455)
-
-Implementing Websocket as a [WebSocketStream](https://github.com/ricea/websocketstream-explainer) server using [StreamApi](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
-
-Usage:
+## SSDP
 
 ```ts
-#!/usr/bin/env -S deno run -A --watch-hmr
+const ssdp = new SSDP()
 
-import {serveTcp} from 'https://raw.githubusercontent.com/MAKS11060/deno-protocols/main/utils.ts'
-import {upgradeWebSocketStream} from 'https://raw.githubusercontent.com/MAKS11060/deno-protocols/main/websocket/ws.ts'
-
-serveTcp({port: 8000}, async (conn) => {
-  console.log(conn.remoteAddr.hostname)
-
-  const {url, headers, readable, writable} = await upgradeWebSocketStream(conn)
-  console.log(url, headers)
-
-  const writer = writable.getWriter()
-  for await (const msg of readable.values()) {
-    console.log({msg})
-    writer.write(msg) // loopback
-  }
-
-  console.log('[WebSocketStream] Close')
-})
+const {headers} = await ssdp.search('ssdp:all')
+console.log(headers)
 ```
 
-## [UPnP Client (RFC 6970)](https://datatracker.ietf.org/doc/html/rfc6970)
-
-The UPnP Client provides a simple interface for managing network port mappings.
-
-### Methods
-- `getExternalIp()`: Returns the public IP address.
-- `setMapping(options)`: Opens a port with the specified options.
-- `getMapping()`: Returns a list of all current port mappings.
-- `unmap(options)`: Removes a port mapping with the specified options.
-- `unmapAll()`: Removes all port mappings.
-
-Usage:
+## UPnP
 
 ```ts
-#!/usr/bin/env -S deno run -A --unstable-net
+const upnp = new UPnP({description: 'test-service'})
 
-import {UPnP} from 'https://raw.githubusercontent.com/MAKS11060/deno-protocols/main/upnp/upnp.ts'
+console.log(await upnp.getExternalIp())
 
-const upnp = new UPnP()
+await upnp.addPortMapping({remotePort: 8080, leaseDuration: 60})
+await upnp.addPortMapping({remotePort: 8080, leaseDuration: 60, transport: 'udp'})
+console.log(await upnp.getPortMapping())
 
-// Get public address
-console.log('my ip', await upnp.getExternalIp())
-
-// Open port
-await upnp.setMapping({remotePort: 8000, ttl: 150})
-console.log('upnp list', await upnp.getMapping())
-
-// Remove port
-// await this.unmap({remotePort: 8000})
-
-// Remove all ports
-// await this.unmapAll()
+await upnp.deletePortMapping({remotePort: 8080})
+await upnp.deletePortMappingAll()
+console.log(await upnp.getPortMapping())
 ```
 
-## [STUN Client (RFC 5389)](https://datatracker.ietf.org/doc/html/rfc5389)
-
-Usage:
+## STUN
 
 ```ts
-#!/usr/bin/env -S deno run -A --unstable-net
+const stun = new STUN({uri: 'stun.l.google.com:19302'})
 
-import {STUN} from 'https://raw.githubusercontent.com/MAKS11060/deno-protocols/main/stun/stun.ts'
-
-const stun = new STUN('stun.l.google.com:19302')
-
-console.log(await stun.getMappedAddress()) // { hostname: "178.68.144.103", port: 49646, family: "IPv4" }
+console.log(await stun.getMappedAddress())
 ```

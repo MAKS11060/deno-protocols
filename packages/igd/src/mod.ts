@@ -34,7 +34,7 @@ export interface FlatService {
   controlURL: string
   SCPDURL: string
   eventSubURL: string
-  parentUDN: string // Связь с родителем
+  parentUDN: string
 }
 
 export type FlatUPnPNode = FlatDevice | FlatService
