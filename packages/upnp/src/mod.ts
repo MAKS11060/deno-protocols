@@ -1,5 +1,5 @@
-import {IGD} from '../../igd/src/mod.ts'
-import {SSDP} from '../../ssdp/src/mod.ts'
+import {IGD} from 'igd'
+import {SSDP} from 'ssdp'
 
 interface UPnPOptions {
   description?: string

@@ -2,6 +2,16 @@
   "type": "module",
   "name": "ssdp",
   "version": "0.0.1",
+  "imports": {
+    "#runtime": {
+      "deno": "./src/runtime/deno.ts",
+      "node": "./src/runtime/node.ts"
+    },
+    "#udp": {
+      "deno": "./src/udp/deno.ts",
+      "node": "./src/udp/node.ts"
+    }
+  },
   "exports": {
     ".": "./src/mod.ts"
   }

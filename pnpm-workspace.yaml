@@ -1,2 +1,5 @@
 packages:
   - ./packages/*
+overrides:
+  igd: link:packages/igd
+  ssdp: link:packages/ssdp

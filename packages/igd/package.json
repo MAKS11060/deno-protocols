@@ -4,5 +4,8 @@
   "version": "0.0.1",
   "exports": {
     ".": "./src/mod.ts"
+  },
+  "dependencies": {
+    "@libs/xml": "jsr:^8.0.0"
   }
 }

@@ -4,5 +4,9 @@
   "version": "0.0.1",
   "exports": {
     ".": "./src/mod.ts"
+  },
+  "dependencies": {
+    "igd": "link:..\\igd",
+    "ssdp": "link:..\\ssdp"
   }
 }

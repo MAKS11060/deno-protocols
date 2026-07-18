@@ -15,10 +15,9 @@ interface RawDevice {
   UDN: string
   serviceList?: {service: RawService | RawService[]}
   deviceList?: {device: RawDevice | RawDevice[]}
-  [key: string]: any // Для остальных полей (modelName, serialNumber и т.д.)
+  [key: string]: any
 }
 
-// 2. Описываем типы для плоского (выходного) формата
 export interface FlatDevice {
   nodeType: 'device'
   deviceType: string

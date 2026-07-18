@@ -4,16 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  igd: link:packages/igd
+  ssdp: link:packages/ssdp
+
 importers:
 
   .:
-    dependencies:
-      '@libs/xml':
-        specifier: jsr:^8.0.0
-        version: '@jsr/libs__xml@8.0.0'
-      '@std/crypto':
-        specifier: jsr:^1.1.0
-        version: '@jsr/std__crypto@1.1.0'
     devDependencies:
       '@types/deno':
         specifier: ^2.7.0
@@ -28,13 +25,28 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
-  packages/igd: {}
+  packages/igd:
+    dependencies:
+      '@libs/xml':
+        specifier: jsr:^8.0.0
+        version: '@jsr/libs__xml@8.0.0'
 
   packages/ssdp: {}
 
-  packages/stun: {}
+  packages/stun:
+    dependencies:
+      '@std/crypto':
+        specifier: jsr:^1.1.0
+        version: '@jsr/std__crypto@1.1.0'
 
-  packages/upnp: {}
+  packages/upnp:
+    dependencies:
+      igd:
+        specifier: link:../igd
+        version: link:../igd
+      ssdp:
+        specifier: link:../ssdp
+        version: link:../ssdp
 
 packages:
 

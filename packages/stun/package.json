@@ -4,5 +4,8 @@
   "version": "0.0.1",
   "exports": {
     ".": "./src/mod.ts"
+  },
+  "dependencies": {
+    "@std/crypto": "jsr:^1.1.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "@maks11060/net",
+  "name": "@maks11060/ts-net",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -18,21 +18,18 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm tsdown",
-    "build:w": "pnpm tsdown --watch",
+    "build": "pnpm tsdown -W",
+    "build:w": "pnpm tsdown -W --watch",
     "fmt": "dprint fmt",
     "lint": "dprint check && tsc --noEmit",
     "prepare": "git config core.hooksPath .hooks"
   },
   "exports": {},
+  "dependencies": {},
   "devDependencies": {
     "@types/deno": "^2.7.0",
     "@types/node": "^26.1.1",
     "tsdown": "^0.22.8",
     "typescript": "^7.0.2"
-  },
-  "dependencies": {
-    "@libs/xml": "jsr:^8.0.0",
-    "@std/crypto": "jsr:^1.1.0"
   }
 }
