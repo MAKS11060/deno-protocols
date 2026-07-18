@@ -1,3 +1,5 @@
+import {networkInterfaces} from '#runtime'
+import {UDP} from '#udp'
 import {makeHttpRequest, parseHttpResponse} from './http.ts'
 
 const SSDP_ADDR = '239.255.255.250'
@@ -46,30 +48,25 @@ export class SSDP {
     })
 
     const res = await Promise.race(
-      Deno.networkInterfaces()
+      networkInterfaces()
         .filter((int) => {
           if (!int.name.toLowerCase().startsWith('eth')) return
           if (int.family !== 'IPv4') return
           return true
         })
         .map(async (int) => {
-          const conn = Deno.listenDatagram({
-            transport: 'udp',
-            hostname: int.address,
-            port: 0,
-          })
+          using conn = new UDP()
+          await conn.bind({transport: 'udp', hostname: int.address, port: 0})
 
           await conn.send(message, {transport: 'udp', hostname: SSDP_ADDR, port: SSDP_PORT})
 
           const [data, addr] = await conn.receive()
-          return {data, remoteAddr: addr, conn}
+          return {data, remoteAddr: addr, localAddress: conn.addr}
         }),
     )
 
-    res.conn.close()
-
     return {
-      localAddress: res.conn.addr as Deno.NetAddr & {transport: 'udp'},
+      localAddress: res.localAddress as Deno.NetAddr & {transport: 'udp'},
       ...parseHttpResponse(res.data),
     }
   }
