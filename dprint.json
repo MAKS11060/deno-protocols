@@ -1,0 +1,26 @@
+{
+  "typescript": {
+    "arrowFunction.useParentheses": "force",
+    "exportDeclaration.spaceSurroundingNamedExports": false,
+    "importDeclaration.spaceSurroundingNamedImports": false,
+    "lineWidth": 120,
+    "quoteStyle": "alwaysSingle",
+    "semiColons": "asi",
+    "spaceAround": false,
+    "spaceSurroundingProperties": false,
+  },
+  "json": {},
+  "markdown": {},
+  "yaml": {},
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json",
+    "**/*-lock.yaml",
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.96.1.wasm",
+    "https://plugins.dprint.dev/json-0.23.0.wasm",
+    "https://plugins.dprint.dev/markdown-0.22.1.wasm",
+    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm"
+  ]
+}

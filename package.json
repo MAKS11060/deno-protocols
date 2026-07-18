@@ -1,0 +1,38 @@
+{
+  "type": "module",
+  "name": "@maks11060/net",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "MAKS11060",
+  "homepage": "https://github.com/MAKS11060/ts-net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAKS11060/ts-net.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MAKS11060/ts-net/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm tsdown",
+    "build:w": "pnpm tsdown --watch",
+    "fmt": "dprint fmt",
+    "lint": "dprint check && tsc --noEmit",
+    "prepare": "git config core.hooksPath .hooks"
+  },
+  "exports": {},
+  "devDependencies": {
+    "@types/deno": "^2.7.0",
+    "@types/node": "^26.1.1",
+    "tsdown": "^0.22.8",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@libs/xml": "jsr:^8.0.0",
+    "@std/crypto": "jsr:^1.1.0"
+  }
+}
