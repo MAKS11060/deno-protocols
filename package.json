@@ -1,0 +1,86 @@
+{
+  "type": "module",
+  "name": "@maks11060/ts-net",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "MAKS11060",
+  "homepage": "https://github.com/MAKS11060/ts-net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAKS11060/ts-net.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MAKS11060/ts-net/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm tsdown",
+    "build:w": "pnpm tsdown --watch",
+    "fmt": "dprint fmt",
+    "lint": "dprint check && tsc --noEmit",
+    "prepare": "git config core.hooksPath .hooks"
+  },
+  "publishConfig": {
+    "imports": {
+      "#runtime": {
+        "deno": {
+          "types": "./dist/runtime/deno.d.mts",
+          "import": "./dist/runtime/deno.mjs"
+        },
+        "node": {
+          "types": "./dist/runtime/node.d.mts",
+          "import": "./dist/runtime/node.mjs"
+        }
+      }
+    },
+    "exports": {
+      ".": {
+        "types": "./dist/mod.d.mts",
+        "import": "./dist/mod.ts"
+      },
+      "./igd": {
+        "types": "./dist/igd.d.mts",
+        "import": "./dist/igd.ts"
+      },
+      "./ssdp": {
+        "types": "./dist/ssdp.d.mts",
+        "import": "./dist/ssdp.ts"
+      },
+      "./stun": {
+        "types": "./dist/stun.d.mts",
+        "import": "./dist/stun.ts"
+      },
+      "./upnp": {
+        "types": "./dist/upnp.d.mts",
+        "import": "./dist/upnp.ts"
+      }
+    }
+  },
+  "imports": {
+    "#runtime": {
+      "deno": "./src/runtime/deno.ts",
+      "node": "./src/runtime/node.ts"
+    }
+  },
+  "exports": {
+    ".": "./src/mod.ts",
+    "./igd": "./src/igd.ts",
+    "./ssdp": "./src/ssdp.ts",
+    "./stun": "./src/stun.ts",
+    "./upnp": "./src/upnp.ts"
+  },
+  "dependencies": {
+    "@libs/xml": "jsr:^8.0.0",
+    "@std/crypto": "jsr:^1.1.0"
+  },
+  "devDependencies": {
+    "@types/deno": "^2.7.0",
+    "@types/node": "^26.1.1",
+    "tsdown": "^0.22.8",
+    "typescript": "^7.0.2"
+  }
+}

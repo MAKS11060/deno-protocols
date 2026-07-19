@@ -1,9 +1,8 @@
-#!/usr/bin/env -S deno run -A --unstable-hmr
-
-import {timingSafeEqual} from 'jsr:@std/crypto/timing-safe-equal'
+import {UDP} from '#runtime'
+import {timingSafeEqual} from '@std/crypto/timing-safe-equal'
 
 interface NetAddr {
-  family: 'IPv4' | 'IPv6'
+  type: 'IPv4' | 'IPv6'
   hostname: string
   port: number
 }
@@ -37,19 +36,29 @@ const StunMessageTypeMappedAddress = {
 
 const magic = Uint8Array.from([0x21, 0x12, 0xa4, 0x42])
 
-const xor = (a: Uint8Array, b: Uint8Array) => a.map((v, i) => v ^ b[i])
+const xor = (a: Uint8Array, b: Uint8Array) => a.map((v, i) => v ^ b[i]!)
 
 export class STUN {
   readonly uri: URL
-  readonly socket: Deno.DatagramConn
 
-  constructor(uri: string = 'stun.l.google.com:19302', options?: Deno.UdpListenOptions) {
-    this.uri = uri.startsWith('stun://') ? new URL(uri) : new URL(`stun://${uri}`)
-    this.socket = Deno.listenDatagram({transport: 'udp', hostname: '0.0.0.0', port: 0, ...options})
+  constructor(options?: {
+    /**
+     * @example 'stun.l.google.com:19302'
+     */
+    uri?: string
+  }) {
+    this.uri = options?.uri?.startsWith('stun://')
+      ? new URL(options.uri)
+      : new URL(`stun://${options?.uri}`)
   }
 
-  #send(message: Uint8Array) {
-    return this.socket.send(message, {transport: 'udp', hostname: this.uri.hostname, port: +this.uri.port})
+  async #send(message: Uint8Array<ArrayBuffer>) {
+    const udp = new UDP()
+    await udp.bind({transport: 'udp', hostname: '0.0.0.0', port: 0})
+    await udp.send(message, {transport: 'udp', hostname: this.uri.hostname, port: +this.uri.port})
+    const [data, addr] = await udp.receive()
+
+    return data
   }
 
   #createMessage(type: keyof typeof StunMessageType) {
@@ -84,14 +93,9 @@ export class STUN {
     }
   }
 
-  close() {
-    this.socket.close()
-  }
-
   async getMappedAddress() {
     const {message, transactionId} = this.#createMessage('BindingRequest')
-    await this.#send(message)
-    const [data] = await this.socket.receive()
+    const data = await this.#send(message)
 
     const view = new DataView(data.buffer)
     if (view.getUint16(0) !== 0x0101) {
@@ -104,13 +108,13 @@ export class STUN {
     for (const attr of this.#parseAttr(data.subarray(20))) {
       if (attr.type === StunAttributes.XOR_MappedAddress) {
         const view = new DataView(attr.value.buffer)
-        const family = view.getUint8(1)
+        const type = view.getUint8(1)
         const port = attr.value.subarray(2, 4)
         const ip = attr.value.subarray(4, 8)
         const addr: NetAddr = {
           hostname: xor(ip, magic).join('.'),
           port: new DataView(xor(port, magic).buffer).getUint16(0),
-          family: family === StunMessageTypeMappedAddress.IPv4 ? 'IPv4' : 'IPv6',
+          type: type === StunMessageTypeMappedAddress.IPv4 ? 'IPv4' : 'IPv6',
         }
         return addr
       }
