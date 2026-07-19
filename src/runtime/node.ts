@@ -1,5 +1,13 @@
 import {createSocket, type RemoteInfo, type Socket} from 'node:dgram'
-import type {Addr} from './types.ts'
+import {networkInterfaces as _networkInterfaces} from 'node:os'
+import type {Addr} from '../runtime/types.ts'
+
+export const networkInterfaces = () => {
+  return Object.entries(_networkInterfaces())
+    .flatMap(([name, ints]) => {
+      return ints?.map((int) => ({name, ...int}))!
+    })
+}
 
 export class UDP {
   socket: Socket

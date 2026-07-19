@@ -1,8 +1,8 @@
 #!/usr/bin/env -S deno run -A --unstable-net --watch-hmr
 
-import {IGD} from '../../igd/src/mod.ts'
-import {SSDP} from '../../ssdp/src/mod.ts'
-import {UPnP} from '../src/mod.ts'
+import {IGD} from './igd.ts'
+import {SSDP} from './ssdp.ts'
+import {UPnP} from './upnp.ts'
 
 // const ssdp = new SSDP()
 // const gateway = await ssdp.search('urn:schemas-upnp-org:device:InternetGatewayDevice:1')

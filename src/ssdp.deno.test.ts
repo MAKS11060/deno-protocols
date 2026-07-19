@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run -A --unstable-net --watch-hmr
 
-import {SSDP} from '../src/mod.ts'
+import {SSDP} from './ssdp.ts'
 
 const ssdp = new SSDP()
 

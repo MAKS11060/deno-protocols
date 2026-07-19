@@ -1,5 +1,4 @@
-import {networkInterfaces} from '#runtime'
-import {UDP} from '#udp'
+import {networkInterfaces, UDP} from '#runtime'
 import {makeHttpRequest, parseHttpResponse} from './http.ts'
 
 const SSDP_ADDR = '239.255.255.250'

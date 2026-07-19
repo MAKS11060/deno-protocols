@@ -1,3 +1,4 @@
+import {UDP} from '#runtime'
 import {timingSafeEqual} from '@std/crypto/timing-safe-equal'
 
 interface NetAddr {
@@ -52,9 +53,10 @@ export class STUN {
   }
 
   async #send(message: Uint8Array<ArrayBuffer>) {
-    const listener = Deno.listenDatagram({transport: 'udp', hostname: '0.0.0.0', port: 0})
-    await listener.send(message, {transport: 'udp', hostname: this.uri.hostname, port: +this.uri.port})
-    const [data, addr] = await listener.receive()
+    const udp = new UDP()
+    await udp.bind({transport: 'udp', hostname: '0.0.0.0', port: 0})
+    await udp.send(message, {transport: 'udp', hostname: this.uri.hostname, port: +this.uri.port})
+    const [data, addr] = await udp.receive()
 
     return data
   }

@@ -1,4 +1,8 @@
-import type {Addr} from './types.ts'
+import type {Addr} from '../runtime/types.ts'
+
+export const networkInterfaces = () => {
+  return Deno.networkInterfaces()
+}
 
 export class UDP {
   socket!: Deno.DatagramConn

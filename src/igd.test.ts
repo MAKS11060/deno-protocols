@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run -A --unstable-net --watch-hmr
 
-import {SSDP} from '../../ssdp/src/mod.ts'
-import {IGD} from '../src/mod.ts'
+import {IGD} from './igd.ts'
+import {SSDP} from './ssdp.ts'
 
 const ssdp = new SSDP()
 // const {headers} = await ssdp.search('ssdp:all')
