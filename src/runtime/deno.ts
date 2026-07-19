@@ -29,7 +29,6 @@ export class UDP {
   }
 
   [Symbol.dispose]() {
-    console.log('cloes')
     this.socket.close()
   }
 }

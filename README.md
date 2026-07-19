@@ -10,7 +10,12 @@ Implementation clients for:
 ### Runtime
 
 - [x] Deno
-- [ ] Node - WIP
+- [x] Node
+
+<!-- ## Install
+```ps
+pnpm add @maks11060/ts-net
+``` -->
 
 ## IGN
 
