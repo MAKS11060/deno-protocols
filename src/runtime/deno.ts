@@ -12,8 +12,19 @@ export class UDP {
     return this.socket.addr as Addr
   }
 
-  bind(addr: Addr) {
-    this.socket = Deno.listenDatagram({...addr, transport: 'udp'})
+  bind(addr: Addr, options?: {
+    reuseAddress?: boolean
+    reusePort?: boolean
+  }) {
+    this.socket = Deno.listenDatagram({
+      transport: 'udp',
+      reuseAddress: options?.reuseAddress!,
+      ...addr,
+    })
+  }
+
+  async joinMulticastV4(address: string, networkInterfaces: string) {
+    await this.socket.joinMulticastV4(address, networkInterfaces)
   }
 
   async send(data: Uint8Array<ArrayBuffer>, addr: Addr) {
