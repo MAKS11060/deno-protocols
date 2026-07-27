@@ -10,7 +10,7 @@
   "nodejs-testing.env": { "FORCE_COLOR": "0" },
   "nodejs-testing.extensions": [{
     "filePatterns": ["**/*{js,ts}"],
-    "parameters": ["--env-file-if-exists=.env", "--import", "tsx"],
+    "parameters": ["--env-file-if-exists=.env"],
     "extensions": ["ts"]
   }],
 

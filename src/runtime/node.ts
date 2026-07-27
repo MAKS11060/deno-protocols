@@ -10,14 +10,21 @@ export const networkInterfaces = () => {
 }
 
 export class UDP {
-  socket: Socket
+  socket!: Socket
   addr!: Addr
 
-  constructor() {
-    this.socket = createSocket('udp4')
-  }
+  constructor() {}
 
-  async bind({port, hostname: address}: Addr) {
+  async bind({port, hostname: address}: Addr, options?: {
+    reuseAddress?: boolean
+    reusePort?: boolean
+  }) {
+    this.socket = createSocket({
+      type: 'udp4',
+      reuseAddr: options?.reuseAddress,
+      reusePort: options?.reusePort,
+    })
+
     await new Promise<void>((r) => {
       this.socket.bind({port, address}, () => r())
     })
@@ -26,6 +33,10 @@ export class UDP {
       this.addr = {hostname: address, port, transport: 'udp'} as Addr
     }
     return
+  }
+
+  async joinMulticastV4(address: string, networkInterfaces: string) {
+    // await this.socket.
   }
 
   async send(data: Uint8Array<ArrayBuffer>, addr: Addr) {
